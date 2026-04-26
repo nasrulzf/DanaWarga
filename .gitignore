@@ -1,0 +1,32 @@
+# Build outputs
+bin/
+obj/
+
+# Visual Studio / VS Code user files
+.vs/
+.vscode/
+*.user
+*.suo
+
+# Rider / JetBrains
+.idea/
+*.sln.iml
+
+# Test artifacts
+TestResults/
+*.trx
+*.coverage
+*.coveragexml
+
+# Logs and local environment files
+*.log
+.env
+.env.*
+
+# NuGet
+*.nupkg
+packages/
+
+# OS-generated files
+.DS_Store
+Thumbs.db

@@ -1,0 +1,6 @@
+@DanaWarga.WebApi_HostAddress = http://localhost:5120
+
+GET {{DanaWarga.WebApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

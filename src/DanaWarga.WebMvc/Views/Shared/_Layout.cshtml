@@ -1,0 +1,24 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - DanaWarga</title>
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+    <header>
+        <nav>
+            <a asp-controller="Home" asp-action="Index">Dashboard</a>
+            <a asp-controller="Residents" asp-action="Index">Residents</a>
+            <a asp-controller="Houses" asp-action="Index">Houses</a>
+            <a asp-controller="Payments" asp-action="Index">Payments</a>
+            <a asp-controller="Reports" asp-action="Index">Reports</a>
+            <a asp-controller="Account" asp-action="Login">Login</a>
+        </nav>
+    </header>
+    <main>
+        @RenderBody()
+    </main>
+</body>
+</html>

@@ -1,0 +1,44 @@
+services:
+  mysql:
+    image: mysql:8.4
+    container_name: danawarga-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: Password123!
+      MYSQL_DATABASE: danawarga
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  webapi:
+    build:
+      context: .
+      dockerfile: src/DanaWarga.WebApi/Dockerfile
+    container_name: danawarga-api
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__DefaultConnection: server=mysql;port=3306;database=danawarga;user=root;password=Password123!
+      Jwt__Issuer: DanaWarga
+      Jwt__Audience: DanaWarga.Clients
+      Jwt__Secret: DevEnvironmentSecretKey_AtLeast32Chars
+      Jwt__ExpiryMinutes: 120
+    ports:
+      - "7001:8080"
+    depends_on:
+      - mysql
+
+  webmvc:
+    build:
+      context: .
+      dockerfile: src/DanaWarga.WebMvc/Dockerfile
+    container_name: danawarga-mvc
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      Api__BaseUrl: http://webapi:8080/
+    ports:
+      - "7002:8080"
+    depends_on:
+      - webapi
+
+volumes:
+  mysql_data:

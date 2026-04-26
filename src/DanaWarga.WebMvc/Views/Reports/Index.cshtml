@@ -1,0 +1,41 @@
+@model DanaWarga.WebMvc.Models.ReportsPageViewModel
+
+<h2>IPL Matrix Report</h2>
+
+<form method="get">
+    <input type="number" name="year" value="@Model.Year" min="2000" max="2200" />
+    <button type="submit">Load</button>
+</form>
+
+@if (Model.Report is not null)
+{
+    <p>Total Paid Houses: @Model.Report.TotalPaidHouses</p>
+    <p>Total Unpaid Houses: @Model.Report.TotalUnpaidHouses</p>
+    <p>Collection Rate: @Model.Report.CollectionRate%</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>House</th>
+                <th>Resident</th>
+                @for (var month = 1; month <= 12; month++)
+                {
+                    <th>@month</th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var row in Model.Report.Rows)
+        {
+            <tr>
+                <td>@row.HouseNumber</td>
+                <td>@row.ResidentName</td>
+                @foreach (var month in row.Months.OrderBy(x => x.Month))
+                {
+                    <td>@month.Status</td>
+                }
+            </tr>
+        }
+        </tbody>
+    </table>
+}

@@ -1,0 +1,39 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v10.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v10.0": {
+      "DanaWarga.WebMvc/1.0.0": {
+        "dependencies": {
+          "DanaWarga.Contracts": "1.0.0"
+        },
+        "runtime": {
+          "DanaWarga.WebMvc.dll": {}
+        }
+      },
+      "DanaWarga.Contracts/1.0.0": {
+        "runtime": {
+          "DanaWarga.Contracts.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "DanaWarga.WebMvc/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "DanaWarga.Contracts/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

@@ -1,0 +1,13 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/DanaWarga.Application/DanaWarga.Application.csproj" />
+    <Project Path="src/DanaWarga.Contracts/DanaWarga.Contracts.csproj" />
+    <Project Path="src/DanaWarga.Domain/DanaWarga.Domain.csproj" />
+    <Project Path="src/DanaWarga.Infrastructure/DanaWarga.Infrastructure.csproj" />
+    <Project Path="src/DanaWarga.WebApi/DanaWarga.WebApi.csproj" />
+    <Project Path="src/DanaWarga.WebMvc/DanaWarga.WebMvc.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/DanaWarga.Tests/DanaWarga.Tests.csproj" />
+  </Folder>
+</Solution>

@@ -1,0 +1,30 @@
+@model DanaWarga.WebMvc.Models.HousesPageViewModel
+
+<h2>Houses</h2>
+
+<form asp-action="Create" method="post">
+    <input name="HouseNumber" placeholder="House Number" required />
+    <input name="Address" placeholder="Address" required />
+    <select name="ResidentId" required>
+        <option value="">Select Resident</option>
+        @foreach (var resident in Model.Residents)
+        {
+            <option value="@resident.Id">@resident.FullName</option>
+        }
+    </select>
+    <button type="submit">Add</button>
+</form>
+
+<table>
+    <thead><tr><th>House</th><th>Address</th><th>Resident</th></tr></thead>
+    <tbody>
+    @foreach (var house in Model.Houses)
+    {
+        <tr>
+            <td>@house.HouseNumber</td>
+            <td>@house.Address</td>
+            <td>@house.ResidentName</td>
+        </tr>
+    }
+    </tbody>
+</table>

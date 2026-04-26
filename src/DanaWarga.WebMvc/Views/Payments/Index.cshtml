@@ -1,0 +1,51 @@
+@model DanaWarga.WebMvc.Models.PaymentsPageViewModel
+
+<h2>Payments</h2>
+
+<form asp-action="Submit" method="post">
+    <select name="ResidentId" required>
+        <option value="">Resident</option>
+        @foreach (var resident in Model.Residents)
+        {
+            <option value="@resident.Id">@resident.FullName</option>
+        }
+    </select>
+
+    <select name="HouseId" required>
+        <option value="">House</option>
+        @foreach (var house in Model.Houses)
+        {
+            <option value="@house.Id">@house.HouseNumber</option>
+        }
+    </select>
+
+    <input name="TotalAmount" type="number" min="1" step="1" placeholder="Amount" required />
+    <input name="PaymentDate" type="date" value="@DateTime.Today.ToString("yyyy-MM-dd")" required />
+    <input name="ProofFilePath" placeholder="Proof path (optional)" />
+    <button type="submit">Submit Payment</button>
+</form>
+
+<table>
+    <thead><tr><th>Date</th><th>Status</th><th>Amount</th><th>Allocation</th><th>Action</th></tr></thead>
+    <tbody>
+    @foreach (var payment in Model.Payments)
+    {
+        <tr>
+            <td>@payment.PaymentDate.ToString("yyyy-MM-dd")</td>
+            <td>@payment.Status</td>
+            <td>@payment.TotalAmount</td>
+            <td>@string.Join(", ", payment.Allocations.Select(a => $"{a.Year}-{a.Month:00}: {a.AllocatedAmount}"))</td>
+            <td>
+                @if (payment.Status == "Pending")
+                {
+                    <form asp-action="Validate" method="post">
+                        <input type="hidden" name="paymentId" value="@payment.Id" />
+                        <button type="submit" name="approve" value="true">Approve</button>
+                        <button type="submit" name="approve" value="false">Reject</button>
+                    </form>
+                }
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

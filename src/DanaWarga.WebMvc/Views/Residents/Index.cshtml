@@ -1,0 +1,24 @@
+@model DanaWarga.WebMvc.Models.ResidentsPageViewModel
+
+<h2>Residents</h2>
+
+<form asp-action="Create" method="post">
+    <input name="FullName" placeholder="Full Name" required />
+    <input name="Email" placeholder="Email" required />
+    <input name="PhoneNumber" placeholder="Phone Number" required />
+    <button type="submit">Add</button>
+</form>
+
+<table>
+    <thead><tr><th>Name</th><th>Email</th><th>Phone</th></tr></thead>
+    <tbody>
+    @foreach (var resident in Model.Residents)
+    {
+        <tr>
+            <td>@resident.FullName</td>
+            <td>@resident.Email</td>
+            <td>@resident.PhoneNumber</td>
+        </tr>
+    }
+    </tbody>
+</table>
