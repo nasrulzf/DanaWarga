@@ -13,6 +13,7 @@ public sealed class CreatePaymentCommandHandler(
     IHouseRepository houseRepository,
     IResidentRepository residentRepository,
     IPeriodRepository periodRepository,
+    IFinancialPeriodRepository financialPeriodRepository,
     IIplPriceConfigurationRepository priceRepository,
     IUnitOfWork unitOfWork) : IRequestHandler<CreatePaymentCommand, Guid>
 {
@@ -52,11 +53,14 @@ public sealed class CreatePaymentCommandHandler(
         var maxKnownPeriod = orderedPeriods.Count > 0
             ? orderedPeriods[^1]
             : new BillingPeriod(DateTime.UtcNow.Year, DateTime.UtcNow.Month);
+        var scanGuard = 0;
 
         var outstandingPeriods = new List<PeriodOutstanding>();
 
-        while (remaining > 0)
+        while (remaining > 0 && scanGuard < 240)
         {
+            scanGuard++;
+
             BillingPeriod cursor;
             if (periodIndex < orderedPeriods.Count)
             {
@@ -69,6 +73,11 @@ public sealed class CreatePaymentCommandHandler(
                 cursor = maxKnownPeriod;
             }
 
+            if (await financialPeriodRepository.IsClosedAsync(cursor.Year, cursor.Month, cancellationToken))
+            {
+                continue;
+            }
+
             var required = pricingService.ResolvePrice(allConfigs, cursor, request.HouseId).Amount;
             var paid = allocatedByPeriod.TryGetValue(cursor, out var value) ? value : 0m;
             var outstanding = Math.Max(0m, required - paid);
@@ -78,6 +87,11 @@ public sealed class CreatePaymentCommandHandler(
                 outstandingPeriods.Add(new PeriodOutstanding(cursor, new Money(outstanding)));
                 remaining -= Math.Min(remaining, outstanding);
             }
+        }
+
+        if (remaining > 0)
+        {
+            throw new InvalidOperationException("Unable to allocate payment to open financial periods.");
         }
 
         payment.AllocatePayment(outstandingPeriods);

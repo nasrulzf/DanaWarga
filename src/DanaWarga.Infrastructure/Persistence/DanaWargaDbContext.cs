@@ -15,6 +15,8 @@ public sealed class DanaWargaDbContext(DbContextOptions<DanaWargaDbContext> opti
     public DbSet<IplPaymentAllocation> IplPaymentAllocations => Set<IplPaymentAllocation>();
     public DbSet<Income> Incomes => Set<Income>();
     public DbSet<Expense> Expenses => Set<Expense>();
+    public DbSet<FinancialPeriod> FinancialPeriods => Set<FinancialPeriod>();
+    public DbSet<FinancialPeriodSnapshot> FinancialPeriodSnapshots => Set<FinancialPeriodSnapshot>();
     public DbSet<AppUser> Users => Set<AppUser>();
     public DbSet<AppUserRole> UserRoles => Set<AppUserRole>();
 
@@ -27,8 +29,19 @@ public sealed class DanaWargaDbContext(DbContextOptions<DanaWargaDbContext> opti
         ConfigureMoney(modelBuilder.Entity<IplPaymentAllocation>().OwnsOne(x => x.AllocatedAmount));
         ConfigureMoney(modelBuilder.Entity<Income>().OwnsOne(x => x.Amount));
         ConfigureMoney(modelBuilder.Entity<Expense>().OwnsOne(x => x.Amount));
+        ConfigureMoney(modelBuilder.Entity<FinancialPeriodSnapshot>().OwnsOne(x => x.TotalIncome));
+        ConfigureMoney(modelBuilder.Entity<FinancialPeriodSnapshot>().OwnsOne(x => x.TotalExpense));
+        ConfigureMoney(modelBuilder.Entity<FinancialPeriodSnapshot>().OwnsOne(x => x.EndingBalance));
 
         modelBuilder.Entity<BillingPeriodEntity>()
+            .HasIndex(x => new { x.Year, x.Month })
+            .IsUnique();
+
+        modelBuilder.Entity<FinancialPeriod>()
+            .HasIndex(x => new { x.Year, x.Month })
+            .IsUnique();
+
+        modelBuilder.Entity<FinancialPeriodSnapshot>()
             .HasIndex(x => new { x.Year, x.Month })
             .IsUnique();
 

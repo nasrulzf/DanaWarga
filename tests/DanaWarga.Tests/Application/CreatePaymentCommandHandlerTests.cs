@@ -40,6 +40,10 @@ public sealed class CreatePaymentCommandHandlerTests
         priceRepository.Setup(x => x.ListByHouseAsync(houseId, It.IsAny<CancellationToken>()))
             .ReturnsAsync([new IplPriceConfiguration(houseId, new Money(200000m), new DateTime(2026, 1, 1), null)]);
 
+        var financialPeriodRepository = new Mock<IFinancialPeriodRepository>();
+        financialPeriodRepository.Setup(x => x.IsClosedAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(false);
+
         var unitOfWork = new Mock<IUnitOfWork>();
         unitOfWork.Setup(x => x.SaveChangesAsync(It.IsAny<CancellationToken>())).ReturnsAsync(1);
 
@@ -48,6 +52,7 @@ public sealed class CreatePaymentCommandHandlerTests
             houseRepository.Object,
             residentRepository.Object,
             periodRepository.Object,
+            financialPeriodRepository.Object,
             priceRepository.Object,
             unitOfWork.Object);
 

@@ -85,12 +85,15 @@ public sealed class PaymentAllocationTests
             .Returns(Task.CompletedTask);
 
         var priceRepository = MockPriceConfigurationRepository(price, houseId);
+        var financialPeriodRepository = new Mock<IFinancialPeriodRepository>();
+        financialPeriodRepository.Setup(x => x.IsClosedAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<CancellationToken>())).ReturnsAsync(false);
 
         var handler = new CreatePaymentCommandHandler(
             paymentRepository.Object,
             MockHouseRepository(houseId).Object,
             MockResidentRepository(residentId).Object,
             MockPeriodRepository().Object,
+            financialPeriodRepository.Object,
             priceRepository.Object,
             MockUnitOfWork().Object);
 

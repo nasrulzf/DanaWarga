@@ -12,4 +12,9 @@ public sealed class ExpenseRepository(DanaWargaDbContext dbContext) : IExpenseRe
 
     public async Task<IReadOnlyCollection<Expense>> ListAsync(CancellationToken cancellationToken)
         => await dbContext.Expenses.OrderByDescending(x => x.Date).ToArrayAsync(cancellationToken);
+
+    public async Task<decimal> GetTotalByPeriodAsync(int year, int month, CancellationToken cancellationToken)
+        => await dbContext.Expenses
+            .Where(x => x.Date.Year == year && x.Date.Month == month)
+            .SumAsync(x => x.Amount.Amount, cancellationToken);
 }

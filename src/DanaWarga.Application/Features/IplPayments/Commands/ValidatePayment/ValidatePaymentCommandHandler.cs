@@ -7,6 +7,7 @@ namespace DanaWarga.Application.Features.IplPayments.Commands.ValidatePayment;
 
 public sealed class ValidatePaymentCommandHandler(
     IIplPaymentRepository paymentRepository,
+    IFinancialPeriodRepository financialPeriodRepository,
     IIncomeRepository incomeRepository,
     IUnitOfWork unitOfWork) : IRequestHandler<ValidatePaymentCommand, bool>
 {
@@ -19,6 +20,14 @@ public sealed class ValidatePaymentCommandHandler(
 
         if (request.Approve)
         {
+            foreach (var allocation in payment.Allocations)
+            {
+                if (await financialPeriodRepository.IsClosedAsync(allocation.Year, allocation.Month, cancellationToken))
+                {
+                    throw new InvalidOperationException("Cannot validate payment allocation for a closed financial period.");
+                }
+            }
+
             await incomeRepository.AddAsync(
                 new Income(payment.PaymentDate, "IPL", $"Validated payment {payment.Id}", payment.TotalAmount),
                 cancellationToken);

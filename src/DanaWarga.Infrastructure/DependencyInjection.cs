@@ -19,8 +19,13 @@ public static class DependencyInjection
         var connectionString = configuration.GetConnectionString("DefaultConnection")
             ?? throw new InvalidOperationException("Missing DefaultConnection string.");
 
+        var configuredServerVersion = configuration["MySql:ServerVersion"];
+        var serverVersion = Version.TryParse(configuredServerVersion, out var parsedVersion)
+            ? new MySqlServerVersion(parsedVersion)
+            : new MySqlServerVersion(new Version(8, 0, 36));
+
         services.AddDbContext<DanaWargaDbContext>(options =>
-            options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
+            options.UseMySql(connectionString, serverVersion));
 
         services.Configure<JwtOptions>(configuration.GetSection(JwtOptions.SectionName));
         var jwt = configuration.GetSection(JwtOptions.SectionName).Get<JwtOptions>()
@@ -51,6 +56,8 @@ public static class DependencyInjection
         services.AddScoped<IIplPaymentRepository, IplPaymentRepository>();
         services.AddScoped<IIncomeRepository, IncomeRepository>();
         services.AddScoped<IExpenseRepository, ExpenseRepository>();
+        services.AddScoped<IFinancialPeriodRepository, FinancialPeriodRepository>();
+        services.AddScoped<IFinancialPeriodSnapshotRepository, FinancialPeriodSnapshotRepository>();
         services.AddScoped<IUserRepository, UserRepository>();
 
         services.AddScoped<PasswordHasher>();
